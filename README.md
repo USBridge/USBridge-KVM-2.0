@@ -28,4 +28,11 @@ USBridge is a hardware-based management solution designed for mission-critical s
 
 ---
 
+### Project Status
+<a href="https://github.com/users/USBridge/projects/2">
+  <img src="https://img.shields.io/static/v1?label=USBridge&message=Roadmap&color=93c572&style=for-the-badge&logo=github&logoColor=93c572&labelColor=000000" alt="Roadmap">
+</a>
+
+---
+
 *Control. Protect. Recover.*
