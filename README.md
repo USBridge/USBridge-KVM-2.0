@@ -15,6 +15,12 @@ USBridge is a hardware-based management solution designed for mission-critical s
 
 ---
 
+### Hardware in Action
+![USBridge v2.0 Front Panel Interface](Front_panel.png)
+*USBridge v2.0 hardware interface with integrated OSD and tactile controls.*
+
+---
+
 ### Hardware Specifications
 | Component | Details |
 | :--- | :--- |
