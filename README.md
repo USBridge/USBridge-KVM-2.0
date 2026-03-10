@@ -14,4 +14,18 @@ USBridge is a hardware-based management solution designed for mission-critical s
 * **Data Integrity:** Hardware-isolated Btrfs snapshots with a dedicated data protection layer.
 
 ---
+
+### Hardware Specifications
+| Component | Details |
+| :--- | :--- |
+| **SoC** | Rockchip RK3566 (Quad-Core ARM Cortex-A55) |
+| **RAM** | 2GB / 4GB LPDDR4X options |
+| **Storage** | 16GB eMMC 5.1 + MicroSD Slot |
+| **Video In** | HDMI Input (Full HD support) |
+| **USB** | USB-C OTG (Mass Storage Emulation) |
+| **Networking** | 10/100/1000 Mbps Ethernet |
+| **Interface** | Integrated LCD Status Display + Rotary Encoder |
+
+---
+
 *Control. Protect. Recover.*
