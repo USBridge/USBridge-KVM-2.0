@@ -22,6 +22,13 @@ To initiate a remote session, input the appliance's assigned IP address into the
 
 Upon successful authentication, the interface provisions access to four tabs: **Control**, **Devices**, **Snapshots**, and **Scripts**.
 
+### Account Login & Connections Sync (Optional)
+
+The account icon at the top of the window lets you sign in with Google — this is a separate, optional USBridge account, unrelated to appliance pairing (see [Security & Authentication Model §6](../10-developer-api/security-model.md#6-usbridge-account-login--connections-sync--a-fifth-optional-fully-separate-system) for the full trust model). Once signed in you can:
+
+* See which USBridge licenses (appliance or [Agent](https://github.com/USBridge-Technologies/USBridge-Remote/blob/main/agent/docs/README.md)) belong to your account.
+* Set a **sync passphrase** to sync your saved-connections list (every appliance/agent you've added, including pairing secrets) across your own devices — end-to-end encrypted client-side ([§6.1](../10-developer-api/security-model.md#61-connections-sync-is-end-to-end-encrypted--the-backend-cannot-read-it)); we never hold the key that could decrypt it.
+
 ### 1. Devices Tab (Hardware Passthrough)
 
 Governs the configuration of virtual peripherals and the mounting of remote storage media to the target host.

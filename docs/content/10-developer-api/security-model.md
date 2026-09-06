@@ -61,10 +61,36 @@ Everything above still leaves the API and KVM SSH console reachable on the LAN, 
 
 ---
 
-## 6. Practical Recommendations
+## 6. USBridge Account Login & Connections Sync — a Fifth, Optional, Fully Separate System
+
+Everything in §1–5 above is about the appliance itself and needs no account of any kind. The desktop/mobile client and the software-only [Agent](../7-software-access/desktop-app.md) additionally offer an optional **USBridge account** (Google sign-in) — entirely separate machinery, with its own trust model:
+
+* **What it's for:** viewing which USBridge licenses (hardware appliance or the Agent's RustShine engine) belong to your account, moving a purchased Agent license from one machine to another with one click instead of pasting the old machine's license token by hand, and — client only — syncing your saved-connections list (the appliances/agents you've added, including their pairing secrets) across your own devices.
+* **Login mechanic:** a device-code flow (the same pattern GitHub CLI/Docker use) — the app requests a one-time code, opens your system browser to a page carrying it, you sign in with Google there, and the app picks up a Bearer token once that completes. No password is ever typed into, or stored by, the client/Agent itself; Google is the only party that ever sees your Google credentials.
+* **This account has no bearing on §1–5 at all.** It doesn't grant API access, doesn't pair Moonlight, and doesn't affect Tailscale-Only Access or Paranoia Mode — a compromised USBridge account can, at worst, see your license list and (if you've set one up) your encrypted connections blob; it cannot reach an appliance directly.
+
+### 6.1 Connections Sync Is End-to-End Encrypted — the Backend Cannot Read It
+
+The synced connections list (which necessarily includes each saved appliance/agent's pairing secret) is encrypted **entirely on your device** before it's ever sent anywhere:
+
+* **Key derivation:** Argon2id (RFC 9106's "second recommended" interactive profile — 64 MiB memory, 3 passes), from your email plus a **separate sync passphrase** you set yourself — never your Google password, never sent to any server, and not the same secret as the account login above. This is deliberate: Google login only proves who you are; it can't also be the encryption key, or the backend (which already knows your email) could decrypt everything itself.
+* **Encryption:** AES-256-GCM, a fresh random nonce per sync — standard, audited primitives (Go's own `crypto/aes`/`crypto/cipher` and the reference `golang.org/x/crypto/argon2`), no custom cipher construction.
+* **What the backend ever sees:** only the resulting ciphertext, a nonce, and a version counter — never the plaintext connections list, your sync passphrase, or the key derived from it. A breach of the backend's storage yields nothing decryptable without that passphrase.
+* **Your own responsibility:** as with any passphrase-derived key, strength depends entirely on the passphrase you choose — a short or guessable one narrows how much Argon2id's cost actually helps against a determined offline attacker with your ciphertext. Pick something long and random, not a word or two.
+
+### 6.2 Practical Recommendations
+
+* Setting up sync is optional — skip it entirely if you'd rather each device's connections list stay purely local.
+* Use a genuinely long, random sync passphrase, distinct from your Google account password and from any appliance's master secret.
+* Logging out of the USBridge account (client or Agent) only forgets the login locally — there's no server-side session to invalidate, and it doesn't touch anything from §1–5.
+
+---
+
+## 7. Practical Recommendations
 
 * **Treat the pairing QR/secret like a root credential.** Anyone who scans it can pair a new client with full API access — but even full API access doesn't put your snapshot history at risk: there's no API or screen path that deletes or formats existing snapshots, only physical access to the device or the card itself. See [Security & Data Protection](../4-snapshots-state-management/security-storage.md#3-no-automated-deletion-and-no-remote-way-to-erase-snapshots).
 * **Give each administrator their own login** via [Users Control](../3-bios-in-terminal/technology-overview.md) instead of sharing one account.
 * **Prefer Tailscale** for API/Moonlight sessions outside a network you fully control.
 * **For the strictest lockdown, enable Paranoia Mode** (§5.2) — Tailscale-Only Access plus WebRTC off — so the appliance has no LAN-reachable API/SSH surface at all.
 * **Periodically review Paired Clients** and unpair anything you don't recognize or no longer use.
+* **If you use connections sync (§6.1), pick a real passphrase** — long and random, not reused from anywhere else — since it's the only thing standing between a leaked sync blob and your saved appliances' pairing secrets.
